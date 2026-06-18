@@ -1,0 +1,17 @@
+# Claude Code 本地配置
+.claude/
+
+# 构建产物（含 Excel 文件，可能含个人/客户数据）
+artifacts/
+
+# 一次性历史脚本（含本地路径，不适合公开）
+fix-liquidity.js
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+
+# 系统文件
+.DS_Store
+Thumbs.db
