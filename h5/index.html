@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>家庭财务健康诊断</title>
+<style>
+:root {
+  --primary: #1a56db;
+  --primary-light: #e8eefb;
+  --green: #059669;
+  --green-bg: #ecfdf5;
+  --yellow: #d97706;
+  --yellow-bg: #fffbeb;
+  --red: #dc2626;
+  --red-bg: #fef2f2;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-700: #374151;
+  --gray-900: #111827;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.06);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,.1), 0 4px 6px rgba(0,0,0,.05);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-900);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 480px; margin: 0 auto; padding: 0 16px 100px; }
+
+/* === Header === */
+.header {
+  text-align: center;
+  padding: 32px 0 24px;
+}
+.header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 6px;
+}
+.header p {
+  font-size: 13px;
+  color: var(--gray-500);
+}
+
+/* === Stage Selector === */
+.stage-selector {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.stage-selector label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: 10px;
+}
+.stage-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.stage-pill {
+  flex: 1;
+  min-width: calc(50% - 4px);
+  padding: 10px 8px;
+  border: 2px solid var(--gray-200);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+  color: var(--gray-700);
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s;
+}
+.stage-pill.active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* === Section === */
+.section {
+  background: #fff;
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.section-header h2 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gray-900);
+}
+.section-header .arrow {
+  font-size: 12px;
+  color: var(--gray-400);
+  transition: transform .2s;
+}
+.section.open .arrow { transform: rotate(180deg); }
+.section-body {
+  display: none;
+  padding: 0 16px 16px;
+}
+.section.open .section-body { display: block; }
+
+/* === Input Row === */
+.input-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+.input-row:last-child { border-bottom: none; }
+.input-label {
+  flex: 1;
+  font-size: 14px;
+  color: var(--gray-700);
+  padding-right: 8px;
+}
+.input-label small {
+  display: block;
+  font-size: 11px;
+  color: var(--gray-400);
+  margin-top: 2px;
+}
+.input-field {
+  width: 120px;
+  text-align: right;
+  padding: 8px 10px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  font-size: 15px;
+  color: var(--primary);
+  font-weight: 500;
+  background: var(--gray-50);
+  outline: none;
+  transition: border-color .2s;
+}
+.input-field:focus {
+  border-color: var(--primary);
+  background: #fff;
+}
+.input-unit {
+  font-size: 13px;
+  color: var(--gray-400);
+  margin-left: 4px;
+  min-width: 24px;
+}
+.auto-calc {
+  color: var(--gray-400);
+  font-style: italic;
+  font-size: 13px;
+  text-align: right;
+  width: 120px;
+}
+
+/* === CTA Button === */
+.cta-wrap {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 16px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  background: linear-gradient(transparent, #fff 20%);
+  z-index: 100;
+}
+.cta-btn {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 14px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  transition: opacity .2s;
+}
+.cta-btn:active { opacity: .85; }
+
+/* === Report === */
+#report { display: none; }
+#report.visible { display: block; }
+#inputForm.hidden { display: none; }
+
+.score-hero {
+  text-align: center;
+  padding: 32px 0 24px;
+}
+.score-circle {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  margin: 0 auto 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 6px solid;
+}
+.score-circle .num {
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1;
+}
+.score-circle .label {
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 4px;
+}
+.score-hero .verdict {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.score-hero .stage-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  background: var(--gray-100);
+  color: var(--gray-500);
+}
+
+/* Radar chart */
+.radar-wrap {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.radar-wrap h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+canvas#radarChart {
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+}
+
+/* Dimension cards */
+.dim-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow);
+}
+.dim-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.dim-card-header h3 {
+  font-size: 15px;
+  font-weight: 600;
+}
+.dim-badge {
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.dim-badge.green { background: var(--green-bg); color: var(--green); }
+.dim-badge.yellow { background: var(--yellow-bg); color: var(--yellow); }
+.dim-badge.red { background: var(--red-bg); color: var(--red); }
+
+.indicator-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 13px;
+  color: var(--gray-700);
+}
+.indicator-row .val { color: var(--gray-500); }
+.score-bar-wrap {
+  height: 6px;
+  background: var(--gray-100);
+  border-radius: 3px;
+  margin-top: 4px;
+  overflow: hidden;
+}
+.score-bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width .6s ease;
+}
+
+/* Advice */
+.advice-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid;
+}
+.advice-card.triggered { border-left-color: var(--red); }
+.advice-card.ok { border-left-color: var(--green); opacity: .6; }
+.advice-card .adv-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.advice-card .adv-tag {
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.advice-card .adv-text {
+  font-size: 13px;
+  color: var(--gray-700);
+  line-height: 1.6;
+}
+.advice-card .adv-direction {
+  font-size: 12px;
+  color: var(--gray-500);
+  margin-top: 4px;
+}
+
+.report-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gray-900);
+  padding: 16px 0 8px;
+}
+
+.back-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: var(--gray-100);
+  color: var(--gray-700);
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 16px;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Input Form ===== -->
+<div id="inputForm" class="container">
+  <div class="header">
+    <h1>家庭财务健康诊断</h1>
+    <p>基于 RFP 体系 · 六维度全面评估</p>
+  </div>
+
+  <div class="stage-selector">
+    <label>选择人生阶段（影响诊断阈值）</label>
+    <div class="stage-pills">
+      <div class="stage-pill active" data-stage="1">单身</div>
+      <div class="stage-pill" data-stage="2">已婚没娃</div>
+      <div class="stage-pill" data-stage="3">有娃在养</div>
+      <div class="stage-pill" data-stage="4">孩子独立了</div>
+      <div class="stage-pill" data-stage="5">已退休</div>
+    </div>
+  </div>
+
+  <!-- 资产负债 -->
+  <div class="section open" id="sec-asset">
+    <div class="section-header" onclick="toggleSection('sec-asset')">
+      <h2>一、资产负债表</h2>
+      <span class="arrow">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="input-row">
+        <div class="input-label">现金 + 活期 + 货基<small>随时可取的钱</small></div>
+        <input class="input-field" type="number" id="A1" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">短期定存（一年内）<small>可并入上项</small></div>
+        <input class="input-field" type="number" id="A2" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">流动资产合计</div>
+        <div class="auto-calc" id="disp_liquid">0 万</div><span class="input-unit"></span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">股票 / 基金 / ETF<small>含A股、港股、美股</small></div>
+        <input class="input-field" type="number" id="B1" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">债券 / 储蓄险现金价值<small>增额寿、年金的现金价值</small></div>
+        <input class="input-field" type="number" id="B2" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">投资性房产市值<small>非自住</small></div>
+        <input class="input-field" type="number" id="B3" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">其他投资<small>加密货币等</small></div>
+        <input class="input-field" type="number" id="B4" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">自住房产市值<small>无则填 0</small></div>
+        <input class="input-field" type="number" id="C1" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">汽车 / 其他自用资产<small>折旧后估值</small></div>
+        <input class="input-field" type="number" id="C2" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">房贷余额</div>
+        <input class="input-field" type="number" id="D1" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">车贷 / 信贷 / 信用卡循环</div>
+        <input class="input-field" type="number" id="D2" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">其他负债</div>
+        <input class="input-field" type="number" id="D3" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">一年前净资产（估算）<small>用于计算净值增长率</small></div>
+        <input class="input-field" type="number" id="lastNetAsset" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 收支储蓄 -->
+  <div class="section" id="sec-income">
+    <div class="section-header" onclick="toggleSection('sec-income')">
+      <h2>二、年度收支储蓄</h2>
+      <span class="arrow">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="input-row">
+        <div class="input-label">年税前工作收入<small>薪资+奖金+年终</small></div>
+        <input class="input-field" type="number" id="E1" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">年理财/被动收入<small>股息+利息+租金+资本利得</small></div>
+        <input class="input-field" type="number" id="E2" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">其他收入<small>兼职、副业等</small></div>
+        <input class="input-field" type="number" id="E3" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">年生活支出<small>食衣住行育乐</small></div>
+        <input class="input-field" type="number" id="F1" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">年还贷金额<small>房贷+车贷+信贷月供×12</small></div>
+        <input class="input-field" type="number" id="F2" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">年保障型保费<small>医疗险、意外险、重疾险、定寿</small></div>
+        <input class="input-field" type="number" id="F3" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">年储蓄型保费<small>增额寿、年金险</small></div>
+        <input class="input-field" type="number" id="F4" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">其他固定支出<small>赡养费等</small></div>
+        <input class="input-field" type="number" id="F5" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 保障信息 -->
+  <div class="section" id="sec-insurance">
+    <div class="section-header" onclick="toggleSection('sec-insurance')">
+      <h2>三、保障信息</h2>
+      <span class="arrow">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="input-row">
+        <div class="input-label">寿险总保额<small>定寿+终身，无则填 0</small></div>
+        <input class="input-field" type="number" id="G1" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">重疾险保额</div>
+        <input class="input-field" type="number" id="G2" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+      <div class="input-row">
+        <div class="input-label">意外险保额</div>
+        <input class="input-field" type="number" id="G3" value="0" inputmode="decimal"><span class="input-unit">万</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:16px"></div>
+  <div class="cta-wrap">
+    <button class="cta-btn" onclick="runDiagnosis()">开始诊断</button>
+  </div>
+</div>
+
+<!-- ===== Report ===== -->
+<div id="report" class="container">
+  <div class="score-hero">
+    <div class="score-circle" id="scoreCircle">
+      <span class="num" id="totalScore">--</span>
+      <span class="label">综合健康分</span>
+    </div>
+    <div class="verdict" id="verdict"></div>
+    <span class="stage-tag" id="stageTag"></span>
+  </div>
+
+  <div class="radar-wrap">
+    <h3>六维度雷达图</h3>
+    <canvas id="radarChart" width="640" height="640"></canvas>
+  </div>
+
+  <div class="report-section-title">各维度详情</div>
+  <div id="dimCards"></div>
+
+  <div class="report-section-title">改善建议</div>
+  <div id="adviceCards"></div>
+
+  <button class="back-btn" onclick="goBack()">← 返回修改数据</button>
+  <div style="height: 32px;"></div>
+</div>
+
+<script>
+// ===== Stage parameters (from ② 阶段参数, v1.1 adjusted) =====
+const PARAMS = {
+  // [single, formation, growth, mature, retire]
+  savingsRate:   { m: [0.15, 0.18, 0.20, 0.25, 0.10], k: [12,12,12,10,15] },
+  freeSavings:   { m: [0.08, 0.08, 0.10, 0.12, 0.05], k: [15,15,15,12,18] },
+  consumeRatio:  { m: [0.65, 0.60, 0.55, 0.50, 0.70], k: [10,10,10,10, 8] },  // reverse
+  emergencyFund: { m: [3, 3, 4, 4, 6],                  k: [1.2,1.2,1,1,0.8] },
+  liquidRatio:   { m: [0.08, 0.08, 0.10, 0.10, 0.15],  k: [8,8,8,8,7] },  // v1.1 lowered
+  debtRatio:     { m: [0.50, 0.55, 0.50, 0.40, 0.20],  k: [8,8,8,8,10] },  // reverse
+  burdenRate:    { m: [0.35, 0.40, 0.35, 0.30, 0.15],  k: [10,10,10,10,12] },  // reverse
+  solvencyRate:  { m: [0.40, 0.40, 0.50, 0.60, 0.80],  k: [8,8,8,8,6] },
+  netGrowth:     { m: [0.08, 0.08, 0.08, 0.06, 0.03],  k: [18,18,18,20,25] },
+  investReturn:  { m: [0.04, 0.04, 0.04, 0.04, 0.03],  k: [25,25,25,25,28] },
+  incomeAssetR:  { m: [0.40, 0.35, 0.35, 0.45, 0.50],  k: [8,8,8,8,7] },
+  premiumRate:   { m: [0.06, 0.08, 0.10, 0.10, 0.08],  k: [20,20,18,18,20] },
+  criticalCover: { m: [3, 3, 5, 3, 2],                   k: [0.8,0.8,0.6,0.8,1.0] },
+  deathCover:    { m: [3, 5, 8, 3, 1],                   k: [0.6,0.5,0.4,0.6,1.0] },
+  safetyMargin:  { m: [0.20, 0.18, 0.15, 0.20, 0.20],  k: [12,12,14,12,12] },
+  freeRate:      { m: [0.20, 0.20, 0.30, 0.50, 0.80],  k: [5,5,5,4,3] },
+  passiveRatio:  { m: [0.15, 0.15, 0.20, 0.30, 0.50],  k: [8,8,8,7,5] },
+};
+
+const STAGE_NAMES = ['单身','已婚没娃','有娃在养','孩子独立了','已退休'];
+const DIM_WEIGHTS = [0.25, 0.15, 0.20, 0.15, 0.15, 0.10];
+const DIM_NAMES = ['攒钱能力','应急能力','还债压力','钱生钱能力','风险兜底','离上岸多远'];
+const DIM_ICONS = ['💰','🛡️','📊','📈','🏥','🌴'];
+const DIM_EXPLAIN = [
+  '你每年能从收入里留下多少钱？这是财富积累的发动机。',
+  '如果突然失业或生大病，你手头的现金够撑几个月？',
+  '每月还贷占了你收入的多少？还款压力越大，腾挪空间越小。',
+  '你的钱有没有在帮你赚钱？资产是在增值还是在吃老本？',
+  '万一发生大病、意外，你的保险能不能兜住？还是全靠积蓄硬扛？',
+  '如果明天不上班了，你的被动收入（理财、租金等）能覆盖多少开支？',
+];
+
+let currentStage = 0; // 0-indexed
+
+// === UI helpers ===
+function toggleSection(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+document.querySelectorAll('.stage-pill').forEach(el => {
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.stage-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    currentStage = parseInt(el.dataset.stage) - 1;
+  });
+});
+
+function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
+
+// === S-curve scoring ===
+function sigmoid(x, m, k) {
+  return 100 / (1 + Math.exp(-k * (x - m)));
+}
+function sigmoidReverse(x, m, k) {
+  return 100 / (1 + Math.exp(k * (x - m)));
+}
+
+function scoreIndicator(paramKey, rawValue, reverse) {
+  const s = currentStage;
+  const m = PARAMS[paramKey].m[s];
+  const k = PARAMS[paramKey].k[s];
+  const score = reverse ? sigmoidReverse(rawValue, m, k) : sigmoid(rawValue, m, k);
+  return Math.round(score * 10) / 10;
+}
+
+// === Premium special scoring (piecewise for overpay) ===
+function scorePremium(rawValue) {
+  const s = currentStage;
+  const m = PARAMS.premiumRate.m[s];
+  const k = PARAMS.premiumRate.k[s];
+  if (rawValue > 0.20) {
+    const base = sigmoid(0.15, m, k);
+    return Math.max(Math.round(Math.min(base, 30) * 10) / 10, 10);
+  }
+  return Math.round(sigmoid(rawValue, m, k) * 10) / 10;
+}
+
+// === Main calculation ===
+function runDiagnosis() {
+  // Gather inputs
+  const liquid = v('A1') + v('A2');
+  const incomeAsset = v('B1') + v('B2') + v('B3') + v('B4');
+  const selfUse = v('C1') + v('C2');
+  const totalAsset = liquid + incomeAsset + selfUse;
+  const totalDebt = v('D1') + v('D2') + v('D3');
+  const netAsset = totalAsset - totalDebt;
+  const lastNet = v('lastNetAsset');
+
+  const income = v('E1') + v('E2') + v('E3');
+  const workIncome = v('E1');
+  const passiveIncome = v('E2');
+  const livingExp = v('F1');
+  const debtPay = v('F2');
+  const premProtect = v('F3');
+  const premSave = v('F4');
+  const premTotal = premProtect + premSave;
+  const otherFixed = v('F5');
+  const totalExp = livingExp + debtPay + premTotal + otherFixed;
+  const totalSaving = income - totalExp;
+  const freeSaving = totalSaving - premSave;
+
+  const lifeInsure = v('G1');
+  const criticalInsure = v('G2');
+  const accidentInsure = v('G3');
+  const monthlyExp = totalExp > 0 ? totalExp / 12 : 0;
+
+  // === Calculate all indicators ===
+  const indicators = [];
+
+  // Dim 1: 储蓄能力 (weight 25%)
+  const savingsRate = income > 0 ? totalSaving / income : 0;
+  const freeSavingsRate = income > 0 ? freeSaving / income : 0;
+  const consumeRatio = income > 0 ? livingExp / income : 0;
+  const s1 = scoreIndicator('savingsRate', savingsRate, false);
+  const s2 = scoreIndicator('freeSavings', freeSavingsRate, false);
+  const s3 = scoreIndicator('consumeRatio', consumeRatio, true);
+  const dim1 = Math.round((s1 + s2 + s3) / 3 * 10) / 10;
+  indicators.push(
+    { dim: 0, name: '总储蓄率', raw: savingsRate, score: s1, fmt: 'pct',
+      explain: `你每赚100块，能存下${(savingsRate*100).toFixed(0)}块。` + (savingsRate < 0.1 ? '基本是月光状态，很难积累资产。' : savingsRate < 0.2 ? '有一定储蓄，但还不够扎实。' : '储蓄习惯不错，继续保持。') },
+    { dim: 0, name: '自由储蓄率', raw: freeSavingsRate, score: s2, fmt: 'pct',
+      explain: '扣掉房贷、保费等固定支出后，真正能自由支配去投资的钱。' + (freeSavingsRate < 0.05 ? '几乎没有余钱可以灵活调配。' : '') },
+    { dim: 0, name: '消费比率', raw: consumeRatio, score: s3, fmt: 'pct', note: '越低越好',
+      explain: `日常吃穿住行花掉了收入的${(consumeRatio*100).toFixed(0)}%。` + (consumeRatio > 0.6 ? '消费占比偏高，可以审视哪些开支能优化。' : '消费控制得不错。') },
+  );
+
+  // Dim 2: 流动性 (weight 15%) — v1.1: 70/30 weighted
+  const emergencyMonths = monthlyExp > 0 ? liquid / monthlyExp : 0;
+  const liquidRatio = totalAsset > 0 ? liquid / totalAsset : 0;
+  const targetMonths = PARAMS.emergencyFund.m[currentStage];
+  const emergencyOk = emergencyMonths >= targetMonths;
+  const s4 = scoreIndicator('emergencyFund', emergencyMonths, false);
+  // 应急达标后：活钱占比越高=资金利用率越低=扣分；未达标：占比高说明还在攒应急金=加分
+  const s5 = emergencyOk
+    ? scoreIndicator('liquidRatio', liquidRatio, true)
+    : scoreIndicator('liquidRatio', liquidRatio, false);
+  const dim2 = Math.round((s4 * 0.7 + s5 * 0.3) * 10) / 10;
+  indicators.push(
+    { dim: 1, name: '应急钱够撑几个月', raw: emergencyMonths, score: s4, fmt: 'month', weight: '70%',
+      explain: `你手头随时能取的钱，够支撑${emergencyMonths.toFixed(1)}个月的开销。` + (emergencyMonths < 3 ? '不到3个月，一旦失业或生病会很被动，建议优先补上。' : emergencyMonths < 6 ? '基本够用，但如果能到6个月会更安心。' : '应急储备充足，不错。') },
+    { dim: 1, name: '活钱占总资产比例', raw: liquidRatio, score: s5, fmt: 'pct', weight: '30%',
+      note: emergencyOk ? '应急够了，越低越好' : '应急不够，需要更多现金',
+      explain: emergencyOk
+        ? `应急储备已达标（≥${targetMonths}个月），活钱占总资产${(liquidRatio*100).toFixed(1)}%。这时候占比越低，说明钱的利用率越高——闲钱都在帮你赚钱。`
+        : `应急储备还没攒够，活钱占总资产${(liquidRatio*100).toFixed(1)}%。当前阶段先把应急的钱攒到${targetMonths}个月再说。` },
+  );
+
+  // Dim 3: 偿债能力 (weight 20%)
+  const debtRatio = totalAsset > 0 ? totalDebt / totalAsset : 0;
+  const burdenRate = income > 0 ? debtPay / income : 0;
+  const solvencyRate = totalAsset > 0 ? netAsset / totalAsset : 0;
+  const s6 = scoreIndicator('debtRatio', debtRatio, true);
+  const s7 = scoreIndicator('burdenRate', burdenRate, true);
+  const s8 = scoreIndicator('solvencyRate', solvencyRate, false);
+  const dim3 = Math.round((s6 + s7 + s8) / 3 * 10) / 10;
+  indicators.push(
+    { dim: 2, name: '欠债占资产多少', raw: debtRatio, score: s6, fmt: 'pct', note: '越低越好',
+      explain: `你的总负债占总资产的${(debtRatio*100).toFixed(0)}%。` + (debtRatio > 0.5 ? '超过一半资产是借的，风险较高。' : debtRatio > 0.3 ? '负债水平适中，注意控制。' : '负债不多，财务结构健康。') },
+    { dim: 2, name: '还贷占收入多少', raw: burdenRate, score: s7, fmt: 'pct', note: '越低越好',
+      explain: `每年要还的贷款（房贷车贷等）吃掉了收入的${(burdenRate*100).toFixed(0)}%。` + (burdenRate > 0.4 ? '还贷压力很大，月月被贷款绑架，几乎没有余力做别的。' : burdenRate > 0.25 ? '还贷压力中等，还有一定空间。' : '还贷压力不大。') },
+    { dim: 2, name: '净资产占比', raw: solvencyRate, score: s8, fmt: 'pct',
+      explain: `你的资产里，真正属于自己的（扣掉欠债）占${(solvencyRate*100).toFixed(0)}%。越高说明家底越扎实。` },
+  );
+
+  // Dim 4: 成长能力 (weight 15%)
+  const netGrowth = lastNet > 0 ? (netAsset - lastNet) / lastNet : 0;
+  const investRet = incomeAsset > 0 ? passiveIncome / incomeAsset : 0;
+  const incomeAssetRatio = totalAsset > 0 ? incomeAsset / totalAsset : 0;
+  const s9  = scoreIndicator('netGrowth', netGrowth, false);
+  const s10 = scoreIndicator('investReturn', investRet, false);
+  const s11 = scoreIndicator('incomeAssetR', incomeAssetRatio, false);
+  const dim4 = Math.round((s9 + s10 + s11) / 3 * 10) / 10;
+  indicators.push(
+    { dim: 3, name: '今年家底涨了多少', raw: netGrowth, score: s9, fmt: 'pct',
+      explain: `过去一年，你的净资产${netGrowth >= 0 ? '增长' : '缩水'}了${Math.abs(netGrowth*100).toFixed(1)}%。` + (netGrowth < 0 ? '家底在缩水，需要找到原因。' : netGrowth < 0.05 ? '增长较慢，看看能不能提高储蓄或投资回报。' : '增长势头不错。') },
+    { dim: 3, name: '投资赚了多少', raw: investRet, score: s10, fmt: 'pct',
+      explain: `你投出去的钱，今年的回报率是${(investRet*100).toFixed(1)}%。` + (investRet < 0.02 ? '跑不赢通胀，钱实际上在贬值。' : investRet < 0.06 ? '还行，基本跑赢了通胀。' : '回报不错，注意风险控制。') },
+    { dim: 3, name: '多少钱在帮你赚钱', raw: incomeAssetRatio, score: s11, fmt: 'pct',
+      explain: `你的总资产里，${(incomeAssetRatio*100).toFixed(0)}%是在"干活"的（基金、股票、理财等），剩下的是自住房、车这类不产生收益的资产。` },
+  );
+
+  // Dim 5: 保障能力 (weight 15%)
+  const premRate = income > 0 ? premProtect / income : 0;
+  const criticalYears = totalExp > 0 ? criticalInsure / totalExp : 0;
+  const deathYears = totalExp > 0 ? lifeInsure / totalExp : 0;
+  const safetyMargin = income > 0 ? (income - totalExp) / income : 0;
+  const s12 = scorePremium(premRate);
+  const s13 = scoreIndicator('criticalCover', criticalYears, false);
+  const s13b = scoreIndicator('deathCover', deathYears, false);
+  const s14 = scoreIndicator('safetyMargin', safetyMargin, false);
+  const dim5 = Math.round((s12 + s13 + s13b + s14) / 4 * 10) / 10;
+  indicators.push(
+    { dim: 4, name: '保费花了收入的多少', raw: premRate, score: s12, fmt: 'pct',
+      explain: `保障型保险（医疗、意外、重疾）的保费占收入的${(premRate*100).toFixed(1)}%。` + (premRate < 0.03 ? '偏低，可能保障不够，建议检查是否有基础保障缺口。' : premRate > 0.15 ? '偏高，保费压力大，看看能不能优化产品结构。' : '在合理范围内。') },
+    { dim: 4, name: '大病能扛几年', raw: criticalYears, score: s13, fmt: 'x',
+      explain: `如果确诊重疾，重疾险能赔${criticalInsure}万，够覆盖${criticalYears.toFixed(1)}年的家庭开支。` + (criticalYears < 2 ? '偏低，一场大病可能就把家底掏空。建议优先补充重疾险保额。' : criticalYears < 5 ? '基本够撑过治疗期，但如果能覆盖5年会更安心。' : '重疾保障充足。') },
+    { dim: 4, name: '身故保家人几年', raw: deathYears, score: s13b, fmt: 'x',
+      explain: `如果不幸身故，寿险能赔${lifeInsure}万，够家人维持${deathYears.toFixed(1)}年的生活。` + (accidentInsure > 0 ? `（如果是意外身故，还能额外赔${accidentInsure}万意外险。）` : '') + (deathYears < 2 ? '保额太低，家人会很艰难。建议补充定期寿险，年轻时很便宜。' : deathYears < 5 ? '有一定保障，但覆盖年限偏短。' : '寿险保障不错。') },
+    { dim: 4, name: '收入灵活度', raw: safetyMargin, score: s14, fmt: 'pct',
+      explain: `收入中有${(safetyMargin*100).toFixed(0)}%是可以灵活调配的（扣掉所有固定支出后）。` + (safetyMargin < 0.1 ? '几乎没有弹性，任何意外支出都会很难受。' : '有一定缓冲空间。') },
+  );
+
+  // Dim 6: 财务自由度 (weight 10%)
+  const freeRate = totalExp > 0 ? passiveIncome / totalExp : 0;
+  const passiveRatio = income > 0 ? passiveIncome / income : 0;
+  const s15 = scoreIndicator('freeRate', freeRate, false);
+  const s16 = scoreIndicator('passiveRatio', passiveRatio, false);
+  const dim6 = Math.round((s15 + s16) / 2 * 10) / 10;
+  indicators.push(
+    { dim: 5, name: '不上班能覆盖多少开销', raw: freeRate, score: s15, fmt: 'pct',
+      explain: `你的被动收入（理财利息、股息、租金等）能覆盖${(freeRate*100).toFixed(0)}%的日常开销。` + (freeRate < 0.1 ? '离"睡后收入"还很远，几乎完全依赖工作。' : freeRate < 0.3 ? '有一定被动收入，但还不够独立。' : freeRate >= 1 ? '恭喜，被动收入已经能覆盖全部开销了！' : '被动收入在稳步增长。') },
+    { dim: 5, name: '被动收入占总收入多少', raw: passiveRatio, score: s16, fmt: 'pct',
+      explain: `你的总收入里，${(passiveRatio*100).toFixed(0)}%不需要干活就能拿到。这个比例越高，对工作的依赖就越小。` },
+  );
+
+  const dimScores = [dim1, dim2, dim3, dim4, dim5, dim6];
+  const totalScoreVal = Math.round(dimScores.reduce((sum, s, i) => sum + s * DIM_WEIGHTS[i], 0) * 10) / 10;
+
+  // === Render report ===
+  renderReport(totalScoreVal, dimScores, indicators, {
+    income, totalExp, totalSaving, freeSaving, liquid, totalAsset, totalDebt, netAsset,
+    debtPay, premProtect, premSave, lifeInsure, criticalInsure, accidentInsure, workIncome, passiveIncome, incomeAsset, livingExp, expense: totalExp
+  });
+}
+
+function renderReport(total, dimScores, indicators, data) {
+  document.getElementById('inputForm').classList.add('hidden');
+  document.getElementById('report').classList.add('visible');
+  window.scrollTo(0, 0);
+
+  // Score circle
+  const circle = document.getElementById('scoreCircle');
+  const scoreEl = document.getElementById('totalScore');
+  const verdictEl = document.getElementById('verdict');
+  scoreEl.textContent = total.toFixed(1);
+
+  let color, verdict;
+  if (total >= 75) { color = 'var(--green)'; verdict = '🟢 健康'; }
+  else if (total >= 55) { color = 'var(--yellow)'; verdict = '🟡 亚健康'; }
+  else if (total >= 35) { color = '#f97316'; verdict = '🟠 需关注'; }
+  else { color = 'var(--red)'; verdict = '🔴 警告'; }
+  circle.style.borderColor = color;
+  scoreEl.style.color = color;
+  verdictEl.textContent = verdict;
+  document.getElementById('stageTag').textContent = STAGE_NAMES[currentStage];
+
+  // Radar
+  drawRadar(dimScores);
+
+  // Dimension cards
+  const cardsHtml = dimScores.map((score, i) => {
+    const badge = score >= 70 ? 'green' : score >= 40 ? 'yellow' : 'red';
+    const badgeText = score >= 70 ? '🟢 绿灯' : score >= 40 ? '🟡 黄灯' : '🔴 红灯';
+    const indHtml = indicators.filter(ind => ind.dim === i).map(ind => {
+      const barColor = ind.score >= 70 ? 'var(--green)' : ind.score >= 40 ? 'var(--yellow)' : 'var(--red)';
+      let display;
+      if (ind.fmt === 'pct') display = (ind.raw * 100).toFixed(1) + '%';
+      else if (ind.fmt === 'month') display = ind.raw.toFixed(1) + '个月';
+      else if (ind.fmt === 'x') display = ind.raw.toFixed(1) + '倍';
+      else display = ind.raw.toFixed(2);
+      const explainHtml = ind.explain ? `<div style="font-size:12px;color:var(--gray-500);line-height:1.5;padding:4px 0 6px">${ind.explain}</div>` : '';
+      return `
+        <div class="indicator-row">
+          <span>${ind.name}</span>
+          <span class="val">${display} · ${ind.score.toFixed(0)}分</span>
+        </div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:${Math.min(ind.score,100)}%;background:${barColor}"></div></div>
+        ${explainHtml}
+      `;
+    }).join('');
+    return `
+      <div class="dim-card">
+        <div class="dim-card-header">
+          <h3>${DIM_ICONS[i]} ${DIM_NAMES[i]}</h3>
+          <span class="dim-badge ${badge}">${badgeText} ${score.toFixed(1)}分</span>
+        </div>
+        <div style="font-size:13px;color:var(--gray-500);margin-bottom:10px;line-height:1.5">${DIM_EXPLAIN[i]}</div>
+        ${indHtml}
+      </div>
+    `;
+  }).join('');
+  document.getElementById('dimCards').innerHTML = cardsHtml;
+
+  // Advice
+  const advices = buildAdvice(dimScores, indicators, data);
+  const triggered = advices.filter(a => a.triggered);
+  const ok = advices.filter(a => !a.triggered);
+  let advHtml = '';
+  if (triggered.length === 0) {
+    advHtml = '<div style="text-align:center;padding:20px;color:var(--green);font-weight:600">各项指标都不错，继续保持！</div>';
+  } else {
+    advHtml = triggered.map(a => `
+      <div class="advice-card triggered">
+        <div class="adv-header">
+          <span class="adv-tag" style="background:var(--red-bg);color:var(--red)">${a.priority === 1 ? '🚨 紧急' : a.priority === 2 ? '⚠️ 重要' : '💡 优化'}</span>
+          <span style="font-size:13px;font-weight:600">${a.category}</span>
+        </div>
+        <div class="adv-text">${a.text}</div>
+        <div class="adv-direction" style="background:#f0f9ff;border-left:3px solid #3b82f6;padding:8px 12px;margin-top:8px;border-radius:6px;font-size:13px;color:#1e40af;line-height:1.6">💊 <b>怎么做：</b>${a.action}</div>
+      </div>
+    `).join('');
+  }
+  if (ok.length > 0) {
+    advHtml += '<div style="margin-top:12px;font-size:13px;color:var(--green);font-weight:500">✅ 以下方面表现不错：' + ok.map(a => a.category).join('、') + '</div>';
+  }
+  document.getElementById('adviceCards').innerHTML = advHtml;
+}
+
+function buildAdvice(dimScores, indicators, d) {
+  const monthExp = d.expense > 0 ? d.expense / 12 : 1;
+  const emergencyMonths = d.liquid / monthExp;
+  const targetMonths = PARAMS.emergencyFund.m[currentStage];
+  const gapTarget = targetMonths * monthExp;
+  const gap = Math.max(0, gapTarget - d.liquid);
+  const debtRatio = d.income > 0 ? d.debtPay / d.income : 0;
+  const savingRate = d.income > 0 ? d.totalSaving / d.income : 0;
+
+  const rules = [
+    { priority:1, category:'收支失衡', triggered: d.totalSaving < 0,
+      text:`你每个月花的比赚的多${Math.abs(d.totalSaving).toFixed(1)}万，长期下去存款会越来越少。这是最需要先解决的问题。`,
+      action:`先列出每月固定支出，找出可以砍掉或降低的项目（比如不常用的会员订阅、过高的外食频率）。目标：先把每月结余拉回正数，哪怕只有几百块也行。` },
+
+    { priority:1, category:'应急储备', triggered: emergencyMonths < targetMonths,
+      text:`你现在手上能随时取出来的钱只够花${emergencyMonths.toFixed(1)}个月，建议至少留够${targetMonths}个月。差${gap.toFixed(1)}万。`,
+      action:`开一个单独的余额宝/零钱通账户，每月工资到账自动转入一笔（比如${Math.min(Math.ceil(gap/6), Math.ceil(d.income*0.1)).toFixed(1)}万），专门当"救急的钱"，不到万不得已不动。攒到${(targetMonths * monthExp).toFixed(1)}万就达标了。` },
+
+    { priority:1, category:'还贷压力', triggered: debtRatio > 0.4,
+      text:`你每月收入的${(debtRatio*100).toFixed(0)}%都在还贷，超过了40%的安全线。挣的钱大部分给了银行，自己能支配的太少了。`,
+      action:`优先处理利率最高的贷款（信用卡分期、消费贷通常利率最高）。如果房贷占大头，看看能不能通过转贷降低利率。短期目标：把月还贷额压到收入的35%以下。` },
+
+    { priority:2, category:'风险保障', triggered: dimScores[4] < 40,
+      text:'万一生大病或出意外，现在的保障可能兜不住。保险这块存在明显缺口。',
+      action:'先检查有没有这三样基础保障：①医疗险（百万医疗，一年几百块）、②意外险（一年100多块）、③重疾险（确诊直接赔钱的那种）。如果都没有，先买前两个，花不了多少钱但关键时刻能救命。' },
+
+    { priority:2, category:'攒钱能力', triggered: dimScores[0] < 55,
+      text:`你的储蓄率是${(savingRate*100).toFixed(0)}%，攒钱的速度偏慢。赚的钱不少花的也多，资产增长会很吃力。`,
+      action:`试试"先存后花"：工资到账的当天，自动转${Math.max(10, Math.round(savingRate*100+10))}%到一个不绑消费的账户。剩下的才是这个月能花的预算。坚持3个月就会习惯。` },
+
+    { priority:3, category:'钱生钱', triggered: dimScores[3] < 55,
+      text:'你的资产里大部分在"睡觉"——没有在帮你赚钱。投资理财的比例偏低，或者收益不太理想。',
+      action:'在应急的钱留够之后，多出来的闲钱可以分三档放：①稳健的（大额存单、国债、债基），②平衡的（偏债混合基金、指数基金定投），③进攻的（股票、行业基金）。刚开始可以7:2:1的比例，先稳后进。' },
+
+    { priority:3, category:'负债管理', triggered: dimScores[2] < 55 && dimScores[2] >= 40,
+      text:`还贷压力有点大，虽然还没到危险线，但自由度受限了。`,
+      action:'近期不要再新增贷款（包括分期付款）。如果有多笔贷款，把利率排个序，优先多还利率高的。每还清一笔，把那笔月供叠加到下一笔上面，越还越快。' },
+
+    { priority:3, category:'财务自由度', triggered: dimScores[5] < 55,
+      text:'你离"不上班也能活"还有距离——被动收入（利息、分红、房租等）覆盖不了多少日常开销。这是个长期目标。',
+      action:'这不是一步到位的事，路径是：先攒钱→再投资→最后靠被动收入。当前阶段先把上面的短板补好，被动收入会自然增长。可以从小额基金定投开始积累。' },
+  ];
+  return rules;
+}
+
+// === Radar chart (pure canvas) ===
+function drawRadar(scores) {
+  const canvas = document.getElementById('radarChart');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W/2, cy = H/2, R = W * 0.35;
+  ctx.clearRect(0,0,W,H);
+
+  const n = 6;
+  const angleStep = Math.PI * 2 / n;
+  const startAngle = -Math.PI / 2;
+
+  function getPoint(i, r) {
+    const a = startAngle + i * angleStep;
+    return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+  }
+
+  // Grid
+  [0.2, 0.4, 0.6, 0.8, 1.0].forEach(frac => {
+    ctx.beginPath();
+    for (let i = 0; i <= n; i++) {
+      const [x,y] = getPoint(i % n, R * frac);
+      i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = '#e5e7eb';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+
+  // Spokes
+  for (let i = 0; i < n; i++) {
+    const [x,y] = getPoint(i, R);
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(x, y);
+    ctx.strokeStyle = '#e5e7eb';
+    ctx.stroke();
+  }
+
+  // Data polygon
+  ctx.beginPath();
+  scores.forEach((s, i) => {
+    const [x,y] = getPoint(i, R * Math.min(s, 100) / 100);
+    i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(26,86,219,0.15)';
+  ctx.fill();
+  ctx.strokeStyle = '#1a56db';
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+
+  // Dots and labels
+  scores.forEach((s, i) => {
+    const [x,y] = getPoint(i, R * Math.min(s, 100) / 100);
+    ctx.beginPath();
+    ctx.arc(x,y,5,0,Math.PI*2);
+    ctx.fillStyle = '#1a56db';
+    ctx.fill();
+
+    const [lx, ly] = getPoint(i, R + 32);
+    ctx.font = '600 22px -apple-system, sans-serif';
+    ctx.fillStyle = '#374151';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(DIM_NAMES[i], lx, ly - 12);
+    ctx.font = '500 18px -apple-system, sans-serif';
+    const sc = s >= 70 ? '#059669' : s >= 40 ? '#d97706' : '#dc2626';
+    ctx.fillStyle = sc;
+    ctx.fillText(s.toFixed(1), lx, ly + 14);
+  });
+}
+
+function goBack() {
+  document.getElementById('inputForm').classList.remove('hidden');
+  document.getElementById('report').classList.remove('visible');
+  window.scrollTo(0, 0);
+}
+
+// Auto-calc display for liquid assets
+document.querySelectorAll('#A1,#A2').forEach(el => {
+  el.addEventListener('input', () => {
+    const total = v('A1') + v('A2');
+    document.getElementById('disp_liquid').textContent = total + ' 万';
+  });
+});
+</script>
+</body>
+</html>
